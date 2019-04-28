@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: spring-cloud-scaffold-provider
+  profiles:
+    active: dev

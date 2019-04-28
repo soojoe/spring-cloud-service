@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 second" debug="false">
+  <!-- 控制台日志 -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%level] %class{0}.%method:%line - %m%n
+      </Pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+
+  <!-- info级别日志 -->
+  <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>logs/scaffold-info.log</File>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+    <encoder>
+      <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%level] %class{0}.%method:%line - %m%n
+      </Pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>logs/scaffold-info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxHistory>7</maxHistory>
+      <maxFileSize>128MB</maxFileSize>
+      <totalSizeCap>8GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
+  <!-- error级别日志 -->
+  <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>logs/scaffold-error.log</File>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+    <encoder>
+      <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%level] %class{0}.%method:%line - %m%n
+      </Pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>logs/scaffold-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxHistory>7</maxHistory>
+      <maxFileSize>128MB</maxFileSize>
+      <totalSizeCap>4GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
+  <!--
+      文件名为logback-spring.xml时，可以使用springProfile标签，根据配置的spring.profiles.active
+      的值，自动选用对应的输出方式。
+      如果使用logback-spring.xml文件名，当多环境配置时，可以在application.properties中配置读取的
+      配置文件名，例如logging.config=classpath:logback-pro.xml，指定多个配置文件
+  -->
+
+
+  <!-- 本地环境要打印的日志 -->
+  <springProfile name="dev">
+    <!-- 过滤掉一些无用的DEBUG信息 -->
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.mybatis" level="INFO"/>
+    <!-- 普通日志 -->
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+      <appender-ref ref="INFO"/>
+      <appender-ref ref="ERROR"/>
+    </root>
+  </springProfile>
+
+  <!-- 测试和线上环境要打印的日志 -->
+  <springProfile name="test,prod,online">
+    <!-- 过滤掉一些无用的DEBUG信息 -->
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.mybatis" level="INFO"/>
+    <!-- 普通日志 -->
+    <root level="INFO">
+      <appender-ref ref="INFO"/>
+      <appender-ref ref="ERROR"/>
+    </root>
+  </springProfile>
+</configuration>
